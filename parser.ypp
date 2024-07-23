@@ -68,28 +68,30 @@ Statement : LBRACE Statements RBRACE { printProductionRule(4); }
 Call : ID LPAREN Exp RPAREN { printProductionRule(15); }
 ;
 
-Type : INT { $$ = new Type($1); }
-     | BYTE { $$ = new Type($1); }
-     | BOOL { $$ = new Type($1); }
+Type : INT { $$ = new Type("int"); }
+     | BYTE { $$ = new Type("byte"); }
+     | BOOL { $$ = new Type("bool"); }
 ;
 
-Exp : LPAREN Exp RPAREN {  }
-    | Exp MULT_AND_DIV Exp {  }
-    | Exp ADD_AND_SUB Exp {  }
-    | ID { $$ = new Exp($1, "id"); }
-    | Call { $$ = new Exp($1); }
-    | NUM { $$ = new Exp($1, "num"); }
-    | NUM B {  }
-    | STRING {  }
-    | TRUE { $$ = new Exp($1); }
-    | FALSE { $$ = new Exp($1); }
-    | NOT Exp {  }
-    | Exp AND Exp {  }
-    | Exp OR Exp {  }
-    | Exp RELATIONAL Exp {  }
-    | Exp EQUALITY Exp {  }
-    | LPAREN Type RPAREN Exp { }
-;
+Exp : LPAREN Exp RPAREN { $$ = new Exp(dynamic_cast<Exp*>($1))}
+    | Exp PLUS Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
+    | Exp MINUS Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
+    | Exp MULT Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
+    | Exp DIV Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
+    | ID { $$ = new Exp($1)}
+    | Call { $$ = new Exp(dynamic_cast<Call*>($1)) }
+    | NUM { $$ = new Exp("int"); }
+    | NUM B { $$ = new Exp("byte", $1); }
+    | STRING { $$ = new Exp("string"); }
+    | TRUE { $$ = new Exp("bool"); }
+    | FALSE { $$ = new Exp("bool"); }
+    | NOT Exp { $$ = new Exp(dynamic_cast<Exp*>($2), "logic"); }
+    | Exp AND Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "logic"); }
+    | Exp OR Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "logic"); }
+    | Exp EQUALITYOP Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "relop"); }
+    | Exp RELATIONALOP Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "relop"); }
+    | LPAREN Type RPAREN Exp { $$ = new Exp(dynamic_cast<Exp*>($4), dynamic_cast<Type*>($2)); }
+    ;
 
 %%
 
