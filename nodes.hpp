@@ -1,12 +1,17 @@
 #ifndef _236360_3_NODES_H
 #define _236360_3_NODES_H
 
+#include "symTable.hpp"
+#include "hw3_output.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
 
+extern int yylineno;
+extern symTableStack stacks;
 
-class Node {
+class Node
+{
 
 public:
     std::string val;
@@ -15,43 +20,43 @@ public:
     Node(const Node *other);
     virtual ~Node() = default;
     std::string getValue() const;
-    //Node(const Node &node): val(node.val){};
+    // Node(const Node &node): val(node.val){};
     virtual ~Node() = default;
 };
 
-
 class Program : public Node
-    {
-    public:
-        Program(/* args */) = default;
-        ~Program() = default;
-    };
+{
+public:
+    Program(/* args */) = default;
+    ~Program() = default;
+};
 
-    class Statements : public Node
-    {
-    public:
-        Statements(/* args */) = default;
-        ~Statements() = default;
-    };
+class Statements : public Node
+{
+public:
+    Statements(/* args */) = default;
+    ~Statements() = default;
+};
 
-    class Statement : public Node
-    {
-    public:
-        Statement(/* args */) = default;
-        ~Statement() = default;
-    };
+class Statement : public Node
+{
+public:
+    Statement(const Node *node);
+    Statement(const Type *type, const Node *node);
+    ~Statement() = default;
+};
 
-    class Call : public Node
-    {
-    public:
-        std::string returnType;
-        
-        //Call(/* args */) = default;
-        ~Call() = default;
-    };
+class Call : public Node
+{
+public:
+    std::string returnType;
 
+    Call(const Node *node, const Exp *exp);
+    ~Call() = default;
+};
 
-class Type : public Node {
+class Type : public Node
+{
 
 public:
     std::string type;
@@ -62,13 +67,13 @@ public:
     virtual ~Type() = default;
 };
 
-
-class Exp : public Node {
+class Exp : public Node
+{
 
 public:
     std::string type;
 
-// Methods:
+    // Methods:
     Exp(const Exp *other);
     Exp(const Node *id);
     Exp(const Call *call);
@@ -78,13 +83,9 @@ public:
     Exp(const Exp *operand1, const Exp *operand2, std::string opType);
     Exp(const Exp *operand, const Type *type);
     virtual ~Exp() = default;
-    bool isNumExp() const; 
-
+    bool isNumExp() const;
 };
-
-
 
 #define YYSTYPE Node
 
 #endif //_236360_3_NODES_H
-

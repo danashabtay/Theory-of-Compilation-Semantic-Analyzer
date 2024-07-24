@@ -8,7 +8,7 @@ symTableEntry::symTableEntry(std::string name, std::string type, int offset, boo
 
 /* symTable */
 
-symTable::symTable(int curr_offset) : curr_offset(curr_offset) {}
+symTable::symTable(int curr_offset, bool loop = false) : curr_offset(curr_offset), loop(loop) {}
 
 symTable::~symTable()
 {
@@ -64,9 +64,9 @@ symTableStack::~symTableStack()
     }
 }
 
-void symTableStack::addTable()
+void symTableStack::addTable(bool loop)
 {
-    symTable *newTable = new symTable(offsetStack.back());
+    symTable *newTable = new symTable(offsetStack.back(), loop);
     tableStack.push_back(newTable);
     offsetStack.push_back(offsetStack.back());
 }
@@ -124,6 +124,31 @@ bool symTableStack::doesSymbolExists(const std::string name)
         }
     }  
     return false;  
+}
+
+symTableEntry* symTableStack::getSymbol(const std::string name)
+{
+    for(auto it = tableStack.begin() ; it != tableStack.end() ; it++)
+    {
+        symTable *curr_table = tableStack.back();
+        for(auto it = (*curr_table).symbolsTable.begin(); it != (*curr_table).symbolsTable.end(); it++)
+        {
+            if((*it)->name == name)
+            {
+                return (*it);
+            }
+        }
+    }
+}
+
+bool symTableStack::is_loop()
+{   
+    for (auto it = tableStack.rbegin(); it != tableStack.rend(); ++it) {
+        symTable *current = *it;
+        if (current->loop)
+            return true;
+    }
+    return false;
 }
 
 symTable *symTableStack::getCurrSymTable()

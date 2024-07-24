@@ -1,7 +1,6 @@
 #include "nodes.hpp"
 
 using namespace std;
-
 // Node:
 
 Node::Node() : val("") {};
@@ -20,7 +19,77 @@ std::string Node::getValue() const
 }
 
 
+//Statement:
 
+// Statement -> CONTINUE SC / BREAK SC
+Statement::Statement(const Node *node)
+{
+    if(node->val == "continue")
+    {
+        if(!stacks.is_loop())
+        {
+            output::errorUnexpectedContinue(yylineno);
+            exit(0);
+        }
+    }
+    else if(node->val == "break")
+    {
+        if(!stacks.is_loop())
+        {
+            output::errorUnexpectedBreak(yylineno);
+            exit(0);
+        }
+    }
+}
+
+
+// Statement -> TYPE ID SC
+Statement::Statement(const Type *type, const Node *node)
+{
+    if(stacks.doesSymbolExists(node->val))
+    {
+        output::errorDef(yylineno, node->val);
+        exit(0);
+    }
+
+    stacks.insertSymbol(node->val, type->type, false);
+    this->val = type->val;
+}
+
+
+// Call:
+
+Call::Call(const Node *node, const Exp *exp)
+{
+    std::string name = node->val;
+
+    
+    //look in global scope for the function:
+    if(!stacks.doesSymbolExists(name))
+    {
+        output::errorUndefFunc(yylineno, val);
+        exit(0);
+    }
+
+    // found a matching function symbol! check if it is a function:
+    symTableEntry* symbol = stacks.getSymbol(name);
+    if(!symbol->isFunc)
+    {
+        output::errorUndefFunc(yylineno, val);
+        exit(0);
+    }
+    // it is a function! check argument type:
+    else if(!(symbol->params == exp->val) && !(symbol->params == "int" && exp->val == "byte"))
+    {
+        output::errorPrototypeMismatch(yylineno, name, symbol->params);
+        exit(0);
+    }
+
+    // we found the right function!
+    this->val = name;
+    this->returnType = symbol->type;
+   
+}
 
 // Type:
 
@@ -33,7 +102,7 @@ std::string Type::getType() const
 
 bool Type::isNum() const
 {
-    return this->type == "INT" || this->type == "BYTE";
+    return this->type == "int" || this->type == "byte";
 }
 
 
@@ -53,11 +122,14 @@ Exp::Exp(const Node* id)
 {
     if(id)
     {
-        string varName = id->getValue();
-        /*
-        TODO: Find id by varName and if exists get its type and save in this->expType 
-        If does not exist, handle error
-        */
+        if(!stacks.doesSymbolExists(id->getValue()))
+        {
+            output::errorUndef(yylineno,id->getValue());
+            exit(0);
+        }
+        symTableEntry *symbol = stacks.getSymbol(id->getValue());
+        this->val = symbol->name;
+        this->type = symbol->type;
     }
 }
 
@@ -76,7 +148,7 @@ Exp::Exp(std::string type) : type(type) {}
 //Exp -> NUM B
 Exp::Exp(std::string type, const Node *node)
 {
-    if (type == "BYTE" && node && stoi(node->getValue()) < 255)
+    if (type == "byte" && node && stoi(node->getValue()) < 255)
     {
         this->type = type;
     }
@@ -89,9 +161,9 @@ Exp::Exp(std::string type, const Node *node)
 // EXP -> NOT EXP
 Exp::Exp(const Exp *operand, std::string opType)
 {
-    if (operand && operand->type == "BOOL" && opType == "logic") ///////////////////////**** */
+    if (operand && operand->type == "bool" && opType == "logic") ///////////////////////**** */
     {
-        this->type = "BOOL";
+        this->type = "bool";
     }
     else
     {
@@ -108,9 +180,9 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
     
         if(opType == "logic")
         {
-             if (operand1->type == operand2->type && operand2->type == "BOOL")
+             if (operand1->type == operand2->type && operand2->type == "bool")
             {
-                this->type = "BOOL";
+                this->type = "bool";
                 return;
             }
         }
@@ -118,7 +190,7 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
         {
             if (operand1->isNumExp() && operand2->isNumExp())
             {
-                this->type = "BOOL";
+                this->type = "bool";
                 return;
             }
         }
@@ -126,13 +198,13 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
         {
             if (operand1->isNumExp() && operand2->isNumExp())
             {
-                if (operand1->type == "INT" || operand2->type == "INT")
+                if (operand1->type == "int" || operand2->type == "int")
                 {
-                    this->type = "INT";
+                    this->type = "int";
                 }
                 else
                 {
-                    this->type = "BYTE";
+                    this->type = "byte";
                 }
                 return;
             }
@@ -156,7 +228,7 @@ Exp::Exp(const Exp *operand, const Type *type)
 
 bool Exp::isNumExp() const
 {
-    return this->type == "INT" || this->type == "BYTE";
+    return this->type == "int" || this->type == "byte";
 }
 
 // -----

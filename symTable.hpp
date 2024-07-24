@@ -23,8 +23,9 @@ class symTable
 public:
     std::vector<symTableEntry *> symbolsTable;
     int curr_offset;
+    bool loop;
 
-    symTable(int curr_offset);
+    symTable(int curr_offset, bool loop = false);
     ~symTable();
     bool doesSymbolExists(const std::string name);
     void addSymbol(const symTableEntry &symbol);
@@ -32,17 +33,21 @@ public:
 
 class symTableStack
 {
+    public:
+
     std::vector<symTable *> tableStack;
     std::vector<int> offsetStack;
 
     symTableStack();
     ~symTableStack();
-    void addTable();
+    void addTable(bool loop);
     void removeTable();
-    void insertSymbol(std::string name, std::string type, bool isFunction, std::string params);
+    void insertSymbol(std::string name, std::string type, bool isFunction, std::string params = "");
     bool doesSymbolExists(const std::string name);
     symTable *getCurrSymTable();
     void printScope();
+    symTableEntry* getSymbol(const std::string name);
+    bool is_loop();
 };
 
 #endif //_236360_3_SYMTABLE_H

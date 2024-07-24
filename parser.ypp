@@ -1,5 +1,5 @@
 %{
-#include "output.hpp"
+#include "hw3_output.hpp"
 extern int yylex();
 using namespace output;
 using namespace std;
@@ -52,25 +52,25 @@ Statements : Statement { printProductionRule(2); }
             | Statements Statement { printProductionRule(3); }
 ;
 
-Statement : LBRACE Statements RBRACE { printProductionRule(4); }
-            | Type ID SC { printProductionRule(5); }
-            | Type ID ASSIGN Exp SC { printProductionRule(6); }
-            | ID ASSIGN Exp SC { printProductionRule(7); }
-            | Call SC { printProductionRule(8); }
-            | RETURN SC { printProductionRule(9); }
-            | IF LPAREN Exp RPAREN Statement { printProductionRule(10); }
-            | IF LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(11); }
-            | WHILE LPAREN Exp RPAREN Statement { printProductionRule(12); }
-            | BREAK SC { printProductionRule(13); }
-            | CONTINUE SC { printProductionRule(14); }
+Statement : LBRACE Statements RBRACE {  }
+            | Type ID SC {  }
+            | Type ID ASSIGN Exp SC {  }
+            | ID ASSIGN Exp SC {  }
+            | Call SC {  }
+            | RETURN SC {  } // nothing????
+            | IF LPAREN Exp RPAREN Statement {  }
+            | IF LPAREN Exp RPAREN Statement ELSE Statement {  }
+            | WHILE LPAREN Exp RPAREN {stacks.addTable(true);} Statement {  }
+            | BREAK SC { $$ = new Statement($1); }
+            | CONTINUE SC { $$ = new Statement($1); }
 ;
 
-Call : ID LPAREN Exp RPAREN { printProductionRule(15); }
+Call : ID LPAREN Exp RPAREN { $$ = new Call($1, $3); }
 ;
 
-Type : INT { $$ = new Type("INT"); }
-     | BYTE { $$ = new Type("BYTE"); }
-     | BOOL { $$ = new Type("BOOL"); }
+Type : INT { $$ = new Type("int"); }
+     | BYTE { $$ = new Type("byte"); }
+     | BOOL { $$ = new Type("bool"); }
 ;
 
 Exp : LPAREN Exp RPAREN { $$ = new Exp(dynamic_cast<Exp*>($2))}
@@ -80,11 +80,11 @@ Exp : LPAREN Exp RPAREN { $$ = new Exp(dynamic_cast<Exp*>($2))}
     | Exp DIV Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
     | ID { $$ = new Exp($1)}
     | Call { $$ = new Exp(dynamic_cast<Call*>($1)) }
-    | NUM { $$ = new Exp("INT"); }
-    | NUM B { $$ = new Exp("BYTE", $1); }
-    | STRING { $$ = new Exp("STRING"); }
-    | TRUE { $$ = new Exp("BOOL"); }
-    | FALSE { $$ = new Exp("BOOL"); }
+    | NUM { $$ = new Exp("int"); }
+    | NUM B { $$ = new Exp("byte", $1); }
+    | STRING { $$ = new Exp("string"); }
+    | TRUE { $$ = new Exp("bool"); }
+    | FALSE { $$ = new Exp("bool"); }
     | NOT Exp { $$ = new Exp(dynamic_cast<Exp*>($2), "logic"); }
     | Exp AND Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "logic"); }
     | Exp OR Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "logic"); }
@@ -96,6 +96,8 @@ Exp : LPAREN Exp RPAREN { $$ = new Exp(dynamic_cast<Exp*>($2))}
 %%
 
 /* C code section */
+
+symTableStack stacks = symTableStack();
 
 int main() {
     return yyparse();
