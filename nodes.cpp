@@ -33,7 +33,7 @@ std::string Type::getType() const
 
 bool Type::isNum() const
 {
-    return this->type == "int" || this->type == "byte";
+    return this->type == "INT" || this->type == "BYTE";
 }
 
 
@@ -76,7 +76,7 @@ Exp::Exp(std::string type) : type(type) {}
 //Exp -> NUM B
 Exp::Exp(std::string type, const Node *node)
 {
-    if (type == "byte" && node && stoi(node->getValue()) < 255)
+    if (type == "BYTE" && node && stoi(node->getValue()) < 255)
     {
         this->type = type;
     }
@@ -89,9 +89,9 @@ Exp::Exp(std::string type, const Node *node)
 // EXP -> NOT EXP
 Exp::Exp(const Exp *operand, std::string opType)
 {
-    if (operand && operand->type == opType && opType == "bool")
+    if (operand && operand->type == "BOOL" && opType == "logic") ///////////////////////**** */
     {
-        this->type = "bool";
+        this->type = "BOOL";
     }
     else
     {
@@ -108,9 +108,9 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
     
         if(opType == "logic")
         {
-             if (operand1->type == operand2->type && operand2->type == "bool")
+             if (operand1->type == operand2->type && operand2->type == "BOOL")
             {
-                this->type = "bool";
+                this->type = "BOOL";
                 return;
             }
         }
@@ -118,7 +118,7 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
         {
             if (operand1->isNumExp() && operand2->isNumExp())
             {
-                this->type = "bool";
+                this->type = "BOOL";
                 return;
             }
         }
@@ -126,15 +126,14 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
         {
             if (operand1->isNumExp() && operand2->isNumExp())
             {
-                if (operand1->type == "int" || operand2->type == "int")
+                if (operand1->type == "INT" || operand2->type == "INT")
                 {
-                    this->type = "int";
+                    this->type = "INT";
                 }
                 else
                 {
-                    this->type = "byte";
+                    this->type = "BYTE";
                 }
-                this->type = "bool";
                 return;
             }
         }
@@ -157,7 +156,7 @@ Exp::Exp(const Exp *operand, const Type *type)
 
 bool Exp::isNumExp() const
 {
-    return this->type == "int" || this->type == "byte";
+    return this->type == "INT" || this->type == "BYTE";
 }
 
 // -----

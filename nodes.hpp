@@ -83,25 +83,6 @@ public:
 };
 
 
-class BooleanExp : public Exp {
-
-public:
-    bool boolean;
-    
-    virtual ~BooleanExp() = default;
-};
-
-class NumExp : public Exp
-{
-public:
-    int numVal;
-    std::string type;
-
-    ~NumExp() = default;
-};
-
-
-
 
 #define YYSTYPE Node
 
