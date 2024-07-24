@@ -49,7 +49,7 @@ symTableStack::symTableStack() : tableStack(), offsetStack()
 {
     offsetStack.push_back(0);
     // creating global scope:
-    addTable();
+    addTable(false);
     insertSymbol("print", "void", true, "string");
     insertSymbol("printi", "void", true, "int");
     insertSymbol("print", "void", true, "int");
