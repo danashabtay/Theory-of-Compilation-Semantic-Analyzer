@@ -122,8 +122,14 @@ Statement::Statement(Call *call)
         exit(0);
     }
 }
-
-
+///  Statement -> IF LPAREN Exp RPAREN Statement / ELSE Statement / WHILE LPAREN Exp RPAREN  Statement
+Statement::Statement(Exp *exp)
+//checkinh if condition given is of type bool
+    if(exp->type!="bool"){
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+}
 
 // Call:
 

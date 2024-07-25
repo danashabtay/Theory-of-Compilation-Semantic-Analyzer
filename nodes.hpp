@@ -45,6 +45,7 @@ public:
     Statement(Type *type, Node *node, Exp *exp);
     Statement(Node *node, Exp *exp);
     Statement(Call *call);
+    Statement(Exp *exp)
     ~Statement() = default;
 };
 
