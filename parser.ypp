@@ -74,10 +74,8 @@ Type : INT { $$ = new Type("int"); }
 ;
 
 Exp : LPAREN Exp RPAREN { $$ = new Exp(dynamic_cast<Exp*>($2))}
-    | Exp PLUS Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
-    | Exp MINUS Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
-    | Exp MULT Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
-    | Exp DIV Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic"); }
+    | Exp MULT_AND_DIV Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic");}
+    | Exp ADD_AND_SUB Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "arithmetic");}
     | ID { $$ = new Exp($1)}
     | Call { $$ = new Exp(dynamic_cast<Call*>($1)) }
     | NUM { $$ = new Exp("int"); }
