@@ -60,7 +60,7 @@ Statement : LBRACE {stacks.addTable(false);} Statements {stacks.removeTable();} 
             | RETURN SC {  } // nothing????
             | IF {stacks.addTable(false);} LPAREN Exp RPAREN Statement {$$ =  new Statement(dynamic_cast<Exp*>($3));stacks.removeTable();}  
             | IF {stacks.addTable(false);} LPAREN Exp RPAREN Statement {$$ =  new Statement(dynamic_cast<Exp*>($3));stacks.removeTable();}  ELSE {stacks.addTable(false);} Statement {stacks.removeTable();} //check bool for else?
-            | WHILE {stacks.addTable(true);} LPAREN Exp RPAREN  Statement {$$ =  new Statement(dynamic_cast<Exp*>($3));stacks.removeTable();}}
+            | WHILE {stacks.addTable(true);} LPAREN Exp RPAREN  Statement {$$ =  new Statement(dynamic_cast<Exp*>($3));stacks.removeTable();}
             | BREAK SC { $$ = new Statement($1); }
             | CONTINUE SC { $$ = new Statement($1); }
 ;
