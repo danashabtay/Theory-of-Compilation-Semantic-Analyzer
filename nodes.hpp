@@ -62,6 +62,16 @@ public:
     bool isNumExp() const;
 };
 
+
+class Call : public Node
+{
+public:
+    std::string returnType;
+
+    Call(const Node *node, const Exp *exp);
+    ~Call() = default;
+};
+
 class Statement : public Node
 {
 public:
@@ -83,14 +93,6 @@ public:
 };
 
 
-class Call : public Node
-{
-public:
-    std::string returnType;
-
-    Call(const Node *node, const Exp *exp);
-    ~Call() = default;
-};
 
 
 
