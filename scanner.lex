@@ -1,7 +1,7 @@
 %{
 /* Definition section */
 #include "parser.tab.hpp"
-#include "output.hpp"
+#include "hw3_output.hpp"
 using namespace output;
 %}
 
