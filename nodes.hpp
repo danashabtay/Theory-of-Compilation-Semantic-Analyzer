@@ -26,14 +26,15 @@ public:
 class Program : public Node
 {
 public:
-    Program(/* args */) = default;
+    Program();
     ~Program() = default;
 };
 
 class Statements : public Node
 {
 public:
-    Statements(/* args */) = default;
+    Statements(Statement *statement);
+    Statements(Statements *statements, Statement *statement);
     ~Statements() = default;
 };
 
@@ -45,7 +46,7 @@ public:
     Statement(Type *type, Node *node, Exp *exp);
     Statement(Node *node, Exp *exp);
     Statement(Call *call);
-    Statement(Exp *exp)
+    Statement(Exp *exp);
     ~Statement() = default;
 };
 

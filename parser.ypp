@@ -45,7 +45,7 @@ extern int yylineno;
 
 %%
 
-Program : Statements { printProductionRule(1); }
+Program : Statements { $$ = new Program(); }
 ;
 
 Statements : Statement { printProductionRule(2); }

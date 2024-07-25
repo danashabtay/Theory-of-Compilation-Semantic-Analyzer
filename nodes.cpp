@@ -18,6 +18,15 @@ std::string Node::getValue() const
     return this->val;
 }
 
+//Program:
+Program::Program() {}
+
+
+//Statements:
+Statements::Statements(Statement *statement){}
+
+Statements::Statements(Statements *statements, Statement *statement){}
+
 
 //Statement:
 
@@ -124,6 +133,7 @@ Statement::Statement(Call *call)
 }
 ///  Statement -> IF LPAREN Exp RPAREN Statement / ELSE Statement / WHILE LPAREN Exp RPAREN  Statement
 Statement::Statement(Exp *exp)
+{
 //checkinh if condition given is of type bool
     if(exp->type!="bool"){
         output::errorMismatch(yylineno);
@@ -235,7 +245,7 @@ Exp::Exp(std::string type, const Node *node)
 // EXP -> NOT EXP
 Exp::Exp(const Exp *operand, std::string opType)
 {
-    if (operand && operand->type == "bool" && opType == "logic") ///////////////////////**** */
+    if (operand && operand->type == "bool" && opType == "logic") 
     {
         this->type = "bool";
     }

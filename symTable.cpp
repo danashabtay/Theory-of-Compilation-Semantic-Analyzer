@@ -1,6 +1,15 @@
 #include "symTable.hpp"
 #include "hw3_output.hpp"
 #include <iostream>
+#include <string>
+#include <algorithm>
+
+std::string toUpperCase(const std::string &input) 
+{
+    std::string result = input;
+    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    return result;
+}
 
 /* symTableEntry */
 
@@ -81,11 +90,11 @@ void symTableStack::removeTable()
     {
         if (!(*it)->isFunc)
         {
-            output::printID((*it)->name, (*it)->offset, output::makeFunctionType((*it)->params, (*it)->type));
+            output::printID((*it)->name, (*it)->offset, toUpperCase(output::makeFunctionType((*it)->params, (*it)->type)));
         }
         else
         {
-            output::printID((*it)->name, (*it)->offset, (*it)->type);
+            output::printID((*it)->name, (*it)->offset, toUpperCase((*it)->type));
         }
     }
     tableStack.pop_back();
