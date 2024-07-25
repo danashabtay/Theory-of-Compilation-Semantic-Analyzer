@@ -48,8 +48,8 @@ extern int yylineno;
 Program : Statements { $$ = new Program(); }
 ;
 
-Statements : Statement { printProductionRule(2); }
-            | Statements Statement { printProductionRule(3); }
+Statements : Statement {new Statements(dynamic_cast<Statement*>($1));}
+            | Statements Statement {new Statements(dynamic_cast<Statements*>($1),dynamic_cast<Statement*>($2));}
 ;
 
 Statement : LBRACE {stacks.addTable(false);} Statements {stacks.removeTable();} RBRACE 

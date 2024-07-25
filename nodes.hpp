@@ -33,8 +33,8 @@ public:
 class Statements : public Node
 {
 public:
-    Statements(Statement *statement);
-    Statements(Statements *statements, Statement *statement);
+    Statements(Statement *statement) : Node() {};
+    Statements(Statements *statements, Statement *statement) : Node() {};;
     ~Statements() = default;
 };
 
