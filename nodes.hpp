@@ -30,35 +30,6 @@ public:
     ~Program() = default;
 };
 
-class Statements : public Node
-{
-public:
-    Statements(Statement *statement) : Node() {};
-    Statements(Statements *statements, Statement *statement) : Node() {};;
-    ~Statements() = default;
-};
-
-class Statement : public Node
-{
-public:
-    Statement(const Node *node);
-    Statement(const Type *type, const Node *node);
-    Statement(Type *type, Node *node, Exp *exp);
-    Statement(Node *node, Exp *exp);
-    Statement(Call *call);
-    Statement(Exp *exp);
-    ~Statement() = default;
-};
-
-class Call : public Node
-{
-public:
-    std::string returnType;
-
-    Call(const Node *node, const Exp *exp);
-    ~Call() = default;
-};
-
 class Type : public Node
 {
 
@@ -70,6 +41,7 @@ public:
     bool isNum() const;
     virtual ~Type() = default;
 };
+
 
 class Exp : public Node
 {
@@ -89,6 +61,38 @@ public:
     virtual ~Exp() = default;
     bool isNumExp() const;
 };
+
+class Statement : public Node
+{
+public:
+    Statement(const Node *node);
+    Statement(const Type *type, const Node *node);
+    Statement(Type *type, Node *node, Exp *exp);
+    Statement(Node *node, Exp *exp);
+    Statement(Call *call);
+    Statement(Exp *exp);
+    ~Statement() = default;
+};
+
+class Statements : public Node
+{
+public:
+    Statements(Statement *statement) : Node() {};
+    Statements(Statements *statements, Statement *statement) : Node() {};;
+    ~Statements() = default;
+};
+
+
+class Call : public Node
+{
+public:
+    std::string returnType;
+
+    Call(const Node *node, const Exp *exp);
+    ~Call() = default;
+};
+
+
 
 #define YYSTYPE Node
 
