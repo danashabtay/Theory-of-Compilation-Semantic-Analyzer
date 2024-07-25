@@ -52,11 +52,11 @@ Statements : Statement { printProductionRule(2); }
             | Statements Statement { printProductionRule(3); }
 ;
 
-Statement : LBRACE Statements RBRACE {  }
-            | Type ID SC {  }
-            | Type ID ASSIGN Exp SC {  }
-            | ID ASSIGN Exp SC {  }
-            | Call SC {  }
+Statement : LBRACE {stacks.addTable(false)} Statements {stacks.removeTable()} RBRACE 
+            | Type ID SC {$$ = new Statement(dynamic_cast<Type*>($1),$2);}
+            | Type ID ASSIGN Exp SC {$$ = new Statement(dynamic_cast<Type*>($1),$2,dynamic_cast<Exp*>($4))  }
+            | ID ASSIGN Exp SC {$$ = new Statement($1, dynamic_cast<Exp*>($3))}
+            | Call SC {$$ = new Statement(dynamic_cast<Call*>($1))}
             | RETURN SC {  } // nothing????
             | IF LPAREN Exp RPAREN Statement {  }
             | IF LPAREN Exp RPAREN Statement ELSE Statement {  }

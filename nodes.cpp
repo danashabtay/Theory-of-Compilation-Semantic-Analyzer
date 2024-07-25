@@ -53,8 +53,76 @@ Statement::Statement(const Type *type, const Node *node)
     }
 
     stacks.insertSymbol(node->val, type->type, false);
-    this->val = type->val;
+    this->val = type->val; //?? - statement and type have no val 
 }
+
+/// Statement -> TYPE ID ASSIGN EXP SC
+Statement::Statement(Type *type, Node *node, Exp *exp)
+{
+    if(stacks.doesSymbolExists(node->val))
+    {
+        output::errorDef(yylineno, node->val);
+        exit(0);
+    }
+    //checking if types match
+    if(type->type != exp->type){
+        if (type->type == "string" || exp->type == "string" || exp->type == "void"){
+            output::errorMismatch(yylineno);
+            exit(0);
+        }
+        if (type->type == "byte" &&  exp->type == "int"){
+            output::errorMismatch(yylineno);
+            exit(0);
+        }
+    }
+    else{
+        stacks.insertSymbol(node->val, type->type, false);
+    }
+    /// TODO: need to check for cases of null?
+}
+/// Statement -> ID ASSIGN EXP SC
+Statement::Statement(Node *node, Exp *exp)
+{
+    //check if symbol wasn't defined 
+    if(!stacks.doesSymbolExists(node->val))
+    {
+        output::errorUndef(yylineno, node->val);
+        exit(0);
+    }
+    //types check
+    symTableEntry* symbol = stacks.getSymbol(node->val);
+    if(symbol->isFunc){
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+    else if(symbol->type != exp->type){
+        if (symbol->type == "string" || exp->type == "string" || exp->type == "void"){
+            output::errorMismatch(yylineno);
+            exit(0);
+        }
+        if (symbol->type == "byte" &&  exp->type == "int"){
+            output::errorMismatch(yylineno);
+            exit(0);
+        }
+    }
+}
+
+/// Statement -> Call SC
+Statement::Statement(Call *call)
+{
+    if(!stacks.doesSymbolExists(call->val))
+    {
+        output::errorUndefFunc(yylineno, call->val);
+        exit(0);
+    }
+    symTableEntry* symbol = stacks.getSymbol(call->val);
+    if(!symbol->isFunc)
+    {
+        output::errorUndefFunc(yylineno, val);
+        exit(0);
+    }
+}
+
 
 
 // Call:

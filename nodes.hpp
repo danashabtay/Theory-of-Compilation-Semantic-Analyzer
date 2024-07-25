@@ -21,7 +21,6 @@ public:
     virtual ~Node() = default;
     std::string getValue() const;
     // Node(const Node &node): val(node.val){};
-    virtual ~Node() = default;
 };
 
 class Program : public Node
@@ -43,6 +42,9 @@ class Statement : public Node
 public:
     Statement(const Node *node);
     Statement(const Type *type, const Node *node);
+    Statement(Type *type, Node *node, Exp *exp);
+    Statement(Node *node, Exp *exp);
+    Statement(Call *call);
     ~Statement() = default;
 };
 
