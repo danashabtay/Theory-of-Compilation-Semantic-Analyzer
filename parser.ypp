@@ -1,5 +1,7 @@
 %{
 #include "hw3_output.hpp"
+#include "nodes.hpp"
+#include "symTable.hpp"
 extern int yylex();
 using namespace output;
 using namespace std;
