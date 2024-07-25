@@ -16,8 +16,8 @@ class Node
 public:
     std::string val;
 
-    Node();
-    Node(const Node *other);
+    //Node();
+    Node(const Node &other);
     virtual ~Node() = default;
     std::string getValue() const;
     // Node(const Node &node): val(node.val){};
