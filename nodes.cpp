@@ -315,4 +315,12 @@ bool Exp::isNumExp() const
     return this->type == "int" || this->type == "byte";
 }
 
+
+void check_bool(Node *node) {
+    Exp *exp = dynamic_cast<Exp *>(node);
+    if (exp->type != "bool") {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+}
 // -----
