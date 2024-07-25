@@ -5,6 +5,7 @@ using namespace output;
 using namespace std;
 void yyerror(const char *s);
 extern int yylineno;
+extern symTableStack stacks;
 
 %}
 
