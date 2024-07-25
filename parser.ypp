@@ -86,8 +86,8 @@ Exp : LPAREN Exp RPAREN { $$ = new Exp(dynamic_cast<Exp*>($2))}
     | NOT Exp { $$ = new Exp(dynamic_cast<Exp*>($2), "logic"); }
     | Exp AND Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "logic"); }
     | Exp OR Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "logic"); }
-    | Exp EQUALITYOP Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "relop"); }
-    | Exp RELATIONALOP Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "relop"); }
+    | Exp EQUALITY Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "relop"); }
+    | Exp RELATIONAL Exp { $$ = new Exp(dynamic_cast<Exp*>($1), dynamic_cast<Exp*>($3), "relop"); }
     | LPAREN Type RPAREN Exp { $$ = new Exp(dynamic_cast<Exp*>($4), dynamic_cast<Type*>($2)); }
     ;
 
