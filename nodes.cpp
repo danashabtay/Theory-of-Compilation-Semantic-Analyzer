@@ -330,9 +330,15 @@ Exp::Exp(const Exp *operand, const Type *type)
     {
         this->type = type->getType();
     }
-    else
+    else if (type->type != "byte" || type->type != "int")
     {
-        /* TODO: Handle Error*/
+            output::errorMismatch(yylineno);
+            exit(0);
+    }
+    else if(operand->type != "byte" || operand->type != "int")
+    {
+            output::errorMismatch(yylineno);
+            exit(0);
     }
 }
 
