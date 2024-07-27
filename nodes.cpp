@@ -250,7 +250,7 @@ Exp::Exp(std::string type, const Node *node)
 {
     try
     {
-        if (type == "byte" && node && stoi(node->val) < 255)
+        if (type == "byte" && node && stoi(node->val) <= 255)
         {
             this->type = type;
             return;
