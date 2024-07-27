@@ -1,8 +1,8 @@
 %{
 /* Definition section */
+#include "nodes.hpp"
 #include "parser.tab.hpp"
 #include "hw3_output.hpp"
-#include "nodes.hpp"
 using namespace output;
 %}
 

@@ -17,7 +17,7 @@ symTableEntry::symTableEntry(std::string name, std::string type, int offset, boo
 
 /* symTable */
 
-symTable::symTable(int curr_offset, bool loop = false) : curr_offset(curr_offset), loop(loop) {}
+symTable::symTable(int curr_offset, bool loop) : curr_offset(curr_offset), loop(loop) {}
 
 symTable::~symTable()
 {
@@ -29,12 +29,11 @@ symTable::~symTable()
 
 bool symTable::doesSymbolExists(const std::string name)
 {
-    for (auto it = symbolsTable.begin(); it != symbolsTable.end(); it++)
-    {
-        if ((*it)->name == name)
-        {
+    std::cout << "Checking scope of size " << symbolsTable.size() << "\n";
+    for(int i = 0; i < symbolsTable.size(); i++){
+        std::cout << "iteration " << i << " Symbol is:" << symbolsTable[i]->name << "\n";
+        if (symbolsTable[i]->name == name)
             return true;
-        }
     }
     return false;
 }
@@ -42,13 +41,9 @@ bool symTable::doesSymbolExists(const std::string name)
 void symTable::addSymbol(const symTableEntry &symbol)
 {
     symbolsTable.push_back(new symTableEntry(symbol));
-    if (symbol.offset >= 0)
+    if (symbol.offset > 0)
     {
         curr_offset = symbol.offset;
-    }
-    else
-    {
-        cout << "error offset is weird" << endl;
     }
 }
 
@@ -58,10 +53,13 @@ symTableStack::symTableStack() : tableStack(), offsetStack()
 {
     offsetStack.push_back(0);
     // creating global scope:
+    
     addTable(false);
     insertSymbol("print", "void", true, "string");
     insertSymbol("printi", "void", true, "int");
-    insertSymbol("print", "void", true, "int");
+    insertSymbol("readi", "int", true, "int");
+
+
 }
 
 symTableStack::~symTableStack()
@@ -88,7 +86,7 @@ void symTableStack::removeTable()
     // printing symbols:
     for (auto it = (*curr_table).symbolsTable.begin(); it != (*curr_table).symbolsTable.end(); it++)
     {
-        if (!(*it)->isFunc)
+        if ((*it)->isFunc)
         {
             output::printID((*it)->name, (*it)->offset, toUpperCase(output::makeFunctionType((*it)->params, (*it)->type)));
         }
@@ -121,33 +119,26 @@ void symTableStack::insertSymbol(std::string name, std::string type, bool isFunc
 
 bool symTableStack::doesSymbolExists(const std::string name)
 {
-    for(auto it = tableStack.begin() ; it != tableStack.end() ; it++)
-    {
-        symTable *curr_table = tableStack.back();
-        for(auto it = (*curr_table).symbolsTable.begin(); it != (*curr_table).symbolsTable.end(); it++)
-        {
-            if((*it)->name == name)
-            {
-                return true;
-            }
-        }
-    }  
-    return false;  
+    return this->getSymbol(name) != nullptr;
 }
 
 symTableEntry* symTableStack::getSymbol(const std::string name)
 {
-    for(auto it = tableStack.begin() ; it != tableStack.end() ; it++)
+    for (const auto & curr_table : tableStack)
     {
-        symTable *curr_table = tableStack.back();
-        for(auto it = (*curr_table).symbolsTable.begin(); it != (*curr_table).symbolsTable.end(); it++)
+        if (!curr_table)
         {
-            if((*it)->name == name)
+            continue;
+        }
+        for (const auto & symbol : curr_table->symbolsTable)
+        {
+            if (symbol->name == name)
             {
-                return (*it);
-            }
+                return symbol;
+            }    
         }
     }
+    return nullptr;
 }
 
 bool symTableStack::is_loop()

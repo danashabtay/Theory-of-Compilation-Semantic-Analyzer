@@ -25,7 +25,7 @@ public:
     int curr_offset;
     bool loop;
 
-    symTable(int curr_offset, bool loop = false);
+    symTable(int curr_offset, bool loop);
     ~symTable();
     bool doesSymbolExists(const std::string name);
     void addSymbol(const symTableEntry &symbol);
