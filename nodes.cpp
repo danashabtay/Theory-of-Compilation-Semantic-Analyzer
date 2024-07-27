@@ -297,6 +297,11 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
                 this->type = "bool";
                 return;
             }
+            else if (operand1->type != operand2->type) //is needed?
+            { 
+                output::errorMismatch(yylineno);
+                exit(0);
+            }
         }
         else if (opType == "arithmetic")
         {
@@ -314,7 +319,8 @@ Exp::Exp(const Exp *operand1, const Exp *operand2, std::string opType)
             }
         }
     }
-    /* TODO: Handle Error*/
+    output::errorMismatch(yylineno);
+    exit(0);
 }
 
 // EXP -> LPAREN Type RPAREN Exp
