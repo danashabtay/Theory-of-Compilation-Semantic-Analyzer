@@ -1,6 +1,9 @@
 #include "nodes.hpp"
 
+
+
 using namespace std;
+
 
 static bool check_types_compatible(string type1, string type2)
 {
@@ -179,7 +182,12 @@ Call::Call(const Node *node, const Exp *exp)
     //  it is a function! check argument type:
     if (!(symbol->params == exp->type) && !(symbol->params == "int" && exp->type == "byte"))
     {
-        output::errorPrototypeMismatch(yylineno, name, symbol->params);
+        std::string toPrint;
+        if (symbol->params == "string") toPrint = "STRING";
+        else if(symbol->params == "int") toPrint = "INT";
+        else if(symbol->params == "bool") toPrint = "BOOL";
+        else if(symbol->params == "byte") toPrint = "BYTE";
+        output::errorPrototypeMismatch(yylineno, name, toPrint);
         exit(0);
     }
 
